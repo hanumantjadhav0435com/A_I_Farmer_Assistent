@@ -5,18 +5,17 @@
 {% block head %}
 <style>
     .chat-container {
-        height: 75vh;
+        height: 90vh;
         display: flex;
         flex-direction: column;
     }
     
     .chat-messages {
-        flex: 1;
         overflow-y: auto;
         padding: 30px;
         background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-        border-radius: 15px;
-        margin-bottom: 20px;
+        border-radius: 0;
+        margin-bottom: 0;
     }
     
     .message {
@@ -85,15 +84,17 @@
         border-top: 2px solid #e9ecef;
         padding: 25px;
         background: linear-gradient(135deg, white 0%, #f8f9fa 100%);
-        border-radius: 0 0 15px 15px;
+        border-radius: 0;
     }
     
     .typing-indicator {
         display: none;
-        padding: 15px;
+        padding: 15px 30px;
         font-style: italic;
         color: #6c757d;
         font-size: 14px;
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        border-top: 1px solid #dee2e6;
     }
     
     .category-selector {
@@ -224,7 +225,17 @@
     
     @media (max-width: 768px) {
         .chat-container {
-            height: 70vh;
+            height: 90vh;
+        }
+        
+        .chat-input {
+            height: 35vh !important;
+            padding: 20px;
+        }
+        
+        .chat-messages {
+            height: 55vh !important;
+            padding: 20px;
         }
         
         .message-content {
@@ -238,14 +249,15 @@
         
         .category-tab {
             text-align: center;
+            margin-bottom: 5px;
         }
         
-        .chat-messages {
-            padding: 20px;
+        .parameter-group {
+            margin-bottom: 10px;
         }
         
-        .chat-input {
-            padding: 20px;
+        .message-input-area textarea {
+            font-size: 14px;
         }
     }
 </style>
@@ -277,38 +289,8 @@
                 
                 <div class="card-body p-0">
                     <div class="chat-container">
-                        <div class="chat-messages" id="chatMessages">
-                            <!-- Welcome message -->
-                            <div class="message assistant">
-                                <div class="message-avatar">
-                                    <i class="fas fa-robot"></i>
-                                </div>
-                                <div class="message-content">
-                                    <p class="mb-2"><strong>Welcome to AI Farming Assistant!</strong></p>
-                                    <p class="mb-1">I'm here to help you with:</p>
-                                    <ul class="mb-0">
-                                        <li>Fertilizer recommendations with NPK ratios</li>
-                                        <li>Watering schedules and irrigation advice</li>
-                                        <li>Pest control and disease prevention</li>
-                                        <li>Crop selection and farming guidance</li>
-                                    </ul>
-                                    <p class="mt-2 mb-0">Choose a category below or ask me anything about your farming needs!</p>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="typing-indicator" id="typingIndicator">
-                            <div class="message assistant">
-                                <div class="message-avatar">
-                                    <i class="fas fa-robot"></i>
-                                </div>
-                                <div class="message-content">
-                                    AI is typing...
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="chat-input">
+                        <!-- Input Area (1/3 of viewport) -->
+                        <div class="chat-input" style="height: 30vh; overflow-y: auto; border-bottom: 2px solid #e9ecef; flex: none;">
                             <!-- Category Selector -->
                             <div class="category-selector">
                                 <h6 class="mb-3"><i class="fas fa-list me-2"></i>Select Category for Specific Advice</h6>
@@ -578,6 +560,38 @@
                                 <div class="info-text">
                                     <i class="fas fa-info-circle me-1"></i>
                                     Select a category above for guided input, or ask any farming question in natural language.
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Output Area (2/3 of viewport) -->
+                        <div class="chat-messages" id="chatMessages" style="height: 60vh; overflow-y: auto; flex: none;">
+                            <!-- Welcome message -->
+                            <div class="message assistant">
+                                <div class="message-avatar">
+                                    <i class="fas fa-robot"></i>
+                                </div>
+                                <div class="message-content">
+                                    <p class="mb-2"><strong>Welcome to AI Farming Assistant!</strong></p>
+                                    <p class="mb-1">I'm here to help you with:</p>
+                                    <ul class="mb-0">
+                                        <li>Fertilizer recommendations with NPK ratios</li>
+                                        <li>Watering schedules and irrigation advice</li>
+                                        <li>Pest control and disease prevention</li>
+                                        <li>Crop selection and farming guidance</li>
+                                    </ul>
+                                    <p class="mt-2 mb-0">Choose a category above or ask me anything about your farming needs!</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="typing-indicator" id="typingIndicator">
+                            <div class="message assistant">
+                                <div class="message-avatar">
+                                    <i class="fas fa-robot"></i>
+                                </div>
+                                <div class="message-content">
+                                    AI is typing...
                                 </div>
                             </div>
                         </div>
