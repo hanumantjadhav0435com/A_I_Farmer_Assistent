@@ -6,10 +6,8 @@ class ChatAssistant {
         this.messageInput = document.getElementById('messageInput');
         this.chatMessages = document.getElementById('chatMessages');
         this.typingIndicator = document.getElementById('typingIndicator');
-        this.sessionsList = document.getElementById('sessionsList');
         
         this.initializeEventListeners();
-        this.loadSessions();
     }
     
     initializeEventListeners() {
@@ -29,12 +27,21 @@ class ChatAssistant {
             });
         }
         
-        // Quick action buttons
-        document.querySelectorAll('.quick-action-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const message = e.target.textContent.trim();
-                if (message) {
-                    this.sendQuickMessage(message);
+        // Category tab handling
+        document.querySelectorAll('.category-tab').forEach(tab => {
+            tab.addEventListener('click', (e) => {
+                // Remove active class from all tabs and contents
+                document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.category-content').forEach(c => c.classList.remove('active'));
+                
+                // Add active class to clicked tab
+                tab.classList.add('active');
+                
+                // Show corresponding content
+                const category = tab.getAttribute('data-category');
+                const content = document.getElementById(`${category}-content`);
+                if (content) {
+                    content.classList.add('active');
                 }
             });
         });
@@ -50,8 +57,15 @@ class ChatAssistant {
     }
     
     async sendMessage() {
-        const message = this.messageInput.value.trim();
+        let message = this.messageInput.value.trim();
         if (!message || this.isTyping) return;
+        
+        // Get category-specific parameters
+        const categoryData = this.getCategoryData();
+        if (categoryData.category && categoryData.parameters) {
+            // Build enhanced message with category context
+            message = this.buildCategoryMessage(message, categoryData);
+        }
         
         // Clear input and show user message
         this.messageInput.value = '';
@@ -69,7 +83,9 @@ class ChatAssistant {
                 },
                 body: JSON.stringify({
                     message: message,
-                    session_id: this.currentSessionId
+                    session_id: this.currentSessionId,
+                    category: categoryData.category,
+                    parameters: categoryData.parameters
                 })
             });
             
@@ -79,7 +95,6 @@ class ChatAssistant {
                 // Update session ID if new session was created
                 if (data.session_id && !this.currentSessionId) {
                     this.currentSessionId = data.session_id;
-                    this.loadSessions(); // Refresh sessions list
                 }
                 
                 // Add AI response
@@ -94,6 +109,82 @@ class ChatAssistant {
         } finally {
             this.hideTypingIndicator();
         }
+    }
+    
+    getCategoryData() {
+        const activeTab = document.querySelector('.category-tab.active');
+        if (!activeTab) return { category: null, parameters: {} };
+        
+        const category = activeTab.getAttribute('data-category');
+        const parameters = {};
+        
+        // Get all form inputs for the active category
+        const activeContent = document.querySelector('.category-content.active');
+        if (activeContent) {
+            const inputs = activeContent.querySelectorAll('select, input');
+            inputs.forEach(input => {
+                if (input.value) {
+                    const paramName = input.id.replace(`${category}-`, '');
+                    parameters[paramName] = input.value;
+                }
+            });
+        }
+        
+        return { category, parameters };
+    }
+    
+    buildCategoryMessage(userMessage, categoryData) {
+        const { category, parameters } = categoryData;
+        
+        if (!category || Object.keys(parameters).length === 0) {
+            return userMessage;
+        }
+        
+        let enhancedMessage = userMessage;
+        
+        // Add context based on category and parameters
+        const contextParts = [];
+        
+        if (parameters.crop) {
+            contextParts.push(`Crop: ${parameters.crop}`);
+        }
+        if (parameters.soil) {
+            contextParts.push(`Soil type: ${parameters.soil}`);
+        }
+        if (parameters.size) {
+            contextParts.push(`Farm size: ${parameters.size} acres`);
+        }
+        if (parameters.stage) {
+            contextParts.push(`Growth stage: ${parameters.stage}`);
+        }
+        if (parameters.season) {
+            contextParts.push(`Season: ${parameters.season}`);
+        }
+        if (parameters.method) {
+            contextParts.push(`Irrigation method: ${parameters.method}`);
+        }
+        if (parameters.problem) {
+            contextParts.push(`Problem type: ${parameters.problem}`);
+        }
+        if (parameters.treatment) {
+            contextParts.push(`Treatment preference: ${parameters.treatment}`);
+        }
+        if (parameters.severity) {
+            contextParts.push(`Severity: ${parameters.severity}`);
+        }
+        if (parameters.climate) {
+            contextParts.push(`Climate: ${parameters.climate}`);
+        }
+        if (parameters.topic) {
+            contextParts.push(`Topic: ${parameters.topic}`);
+        }
+        
+        if (contextParts.length > 0) {
+            const context = contextParts.join(', ');
+            enhancedMessage = `${userMessage}\n\nContext: ${context}\nCategory: ${category}`;
+        }
+        
+        return enhancedMessage;
     }
     
     sendQuickMessage(message) {
@@ -171,91 +262,7 @@ class ChatAssistant {
         }
     }
     
-    async loadSessions() {
-        try {
-            const response = await fetch('/api/sessions');
-            const data = await response.json();
-            
-            if (data.sessions && this.sessionsList) {
-                this.renderSessions(data.sessions);
-            }
-        } catch (error) {
-            console.error('Error loading sessions:', error);
-        }
-    }
-    
-    renderSessions(sessions) {
-        if (!this.sessionsList) return;
-        
-        this.sessionsList.innerHTML = '';
-        
-        sessions.forEach(session => {
-            const sessionDiv = document.createElement('div');
-            sessionDiv.className = 'session-item';
-            if (session.id === this.currentSessionId) {
-                sessionDiv.classList.add('active');
-            }
-            
-            sessionDiv.innerHTML = `
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <h6 class="mb-1">${session.name}</h6>
-                        <small class="text-muted">${session.last_message}</small>
-                    </div>
-                    <div class="dropdown">
-                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                            <i class="fas fa-ellipsis-v"></i>
-                        </button>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item text-danger" href="#" onclick="deleteSession(${session.id})">
-                                <i class="fas fa-trash me-1"></i>Delete
-                            </a></li>
-                        </ul>
-                    </div>
-                </div>
-            `;
-            
-            sessionDiv.addEventListener('click', () => {
-                this.loadSession(session.id);
-            });
-            
-            this.sessionsList.appendChild(sessionDiv);
-        });
-    }
-    
-    async loadSession(sessionId) {
-        try {
-            const response = await fetch(`/api/chat-history/${sessionId}`);
-            const data = await response.json();
-            
-            if (data.messages) {
-                this.currentSessionId = sessionId;
-                this.clearChat();
-                
-                // Add welcome message for new sessions
-                if (data.messages.length === 0) {
-                    this.addWelcomeMessage();
-                } else {
-                    // Load existing messages
-                    data.messages.forEach(msg => {
-                        this.addMessage(msg.type, msg.content);
-                    });
-                }
-                
-                // Update active session in sidebar
-                document.querySelectorAll('.session-item').forEach(item => {
-                    item.classList.remove('active');
-                });
-                document.querySelectorAll('.session-item').forEach(item => {
-                    if (item.textContent.includes(data.session_name)) {
-                        item.classList.add('active');
-                    }
-                });
-            }
-        } catch (error) {
-            console.error('Error loading session:', error);
-        }
-    }
+
     
     clearChat() {
         if (this.chatMessages) {
@@ -378,48 +385,6 @@ function startNewChat() {
         window.chatAssistant.currentSessionId = null;
         window.chatAssistant.clearChat();
         window.chatAssistant.addWelcomeMessage();
-        
-        // Remove active class from all sessions
-        document.querySelectorAll('.session-item').forEach(item => {
-            item.classList.remove('active');
-        });
-    }
-}
-
-function deleteSession(sessionId) {
-    if (confirm('Are you sure you want to delete this chat session?')) {
-        fetch(`/delete-session/${sessionId}`, {
-            method: 'POST'
-        }).then(response => {
-            if (response.ok) {
-                window.location.reload();
-            } else {
-                alert('Error deleting session');
-            }
-        }).catch(error => {
-            console.error('Error deleting session:', error);
-            alert('Error deleting session');
-        });
-    }
-}
-
-function saveFarmProfile() {
-    const cropType = document.getElementById('cropType').value;
-    const soilType = document.getElementById('soilType').value;
-    const farmSize = document.getElementById('farmSize').value;
-    
-    if (!cropType || !soilType) {
-        alert('Please fill in at least crop type and soil type');
-        return;
-    }
-    
-    // This would normally save to the backend
-    // For now, we'll just close the modal and show a success message
-    const modal = bootstrap.Modal.getInstance(document.getElementById('farmProfileModal'));
-    modal.hide();
-    
-    if (window.chatAssistant) {
-        window.chatAssistant.showNotification('Farm profile saved successfully!', 'success');
     }
 }
 

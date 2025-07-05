@@ -113,7 +113,10 @@ The application uses SQLAlchemy with the following models:
 
 ```
 Changelog:
-- July 05, 2025. Initial setup
+- July 05, 2025. Initial setup with full authentication system
+- July 05, 2025. Enhanced chat interface with category-based input system
+- July 05, 2025. Removed sidebar sessions, improved spacing and text visibility
+- July 05, 2025. Added structured input forms for fertilizer, watering, pest control, crop selection, and general categories
 ```
 
 ## User Preferences

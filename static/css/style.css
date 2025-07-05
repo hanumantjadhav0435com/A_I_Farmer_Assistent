@@ -15,8 +15,9 @@
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     line-height: 1.6;
-    color: var(--text-dark);
+    color: #2c3e50;
     background-color: #f5f7fa;
+    font-weight: 500;
 }
 
 /* Hero Section */
@@ -62,6 +63,7 @@ body {
     border: none;
     border-radius: 15px;
     transition: all 0.3s ease;
+    color: #2c3e50;
 }
 
 .card:hover {
@@ -72,10 +74,21 @@ body {
 .feature-card {
     background: linear-gradient(135deg, #fff 0%, #f8f9fa 100%);
     border: 1px solid var(--border-color);
+    color: #2c3e50;
 }
 
 .feature-card:hover {
     border-color: var(--primary-green);
+}
+
+.card-title {
+    color: #2c3e50 !important;
+    font-weight: 600;
+}
+
+.card-text {
+    color: #34495e !important;
+    font-weight: 500;
 }
 
 .feature-icon {
@@ -176,22 +189,46 @@ body {
     border-radius: 10px;
     border: 2px solid var(--border-color);
     transition: all 0.3s ease;
+    color: #2c3e50;
+    font-weight: 500;
+    font-size: 15px;
 }
 
 .form-control:focus {
     border-color: var(--primary-green);
     box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+    color: #2c3e50;
+}
+
+.form-control::placeholder {
+    color: #7f8c8d;
+    font-weight: 400;
 }
 
 .form-select {
     border-radius: 10px;
     border: 2px solid var(--border-color);
     transition: all 0.3s ease;
+    color: #2c3e50;
+    font-weight: 500;
+    font-size: 15px;
 }
 
 .form-select:focus {
     border-color: var(--primary-green);
     box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+    color: #2c3e50;
+}
+
+.form-label {
+    color: #2c3e50 !important;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.text-muted {
+    color: #6c757d !important;
+    font-weight: 500;
 }
 
 /* Buttons */
@@ -486,9 +523,59 @@ body {
     background: linear-gradient(135deg, var(--primary-green) 0%, var(--success-green) 100%);
 }
 
+/* Text Enhancement */
+h1, h2, h3, h4, h5, h6 {
+    color: #2c3e50 !important;
+    font-weight: 600;
+}
+
+p {
+    color: #34495e;
+    font-weight: 500;
+    line-height: 1.7;
+}
+
+.lead {
+    color: #2c3e50 !important;
+    font-weight: 500;
+}
+
+.display-4, .display-5 {
+    color: #2c3e50 !important;
+    font-weight: 700;
+}
+
+.text-white {
+    color: white !important;
+    font-weight: 500;
+}
+
+.text-white h1, .text-white h2, .text-white h3, 
+.text-white h4, .text-white h5, .text-white h6 {
+    color: white !important;
+}
+
+.text-white p, .text-white .lead {
+    color: rgba(255, 255, 255, 0.95) !important;
+}
+
+/* List Styling */
+ul li, ol li {
+    color: #34495e;
+    font-weight: 500;
+    margin-bottom: 5px;
+}
+
+/* Small text */
+small {
+    color: #6c757d !important;
+    font-weight: 500;
+}
+
 /* Utilities */
 .text-success {
     color: var(--primary-green) !important;
+    font-weight: 600;
 }
 
 .bg-success {
@@ -497,6 +584,21 @@ body {
 
 .border-success {
     border-color: var(--primary-green) !important;
+}
+
+.text-danger {
+    color: #dc3545 !important;
+    font-weight: 500;
+}
+
+.text-info {
+    color: #0dcaf0 !important;
+    font-weight: 500;
+}
+
+.text-warning {
+    color: #ffc107 !important;
+    font-weight: 500;
 }
 
 /* Animation Classes */
