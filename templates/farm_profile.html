@@ -1,0 +1,162 @@
+{% extends "base.html" %}
+
+{% block title %}Farm Profile - AI Farming Assistant{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-success text-white">
+                    <h4 class="mb-0">
+                        <i class="fas fa-tractor me-2"></i>Farm Profile Management
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        {{ form.hidden_tag() }}
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                {{ form.crop_name.label(class="form-label") }}
+                                {{ form.crop_name(class="form-control") }}
+                                {% if form.crop_name.errors %}
+                                    <div class="text-danger mt-1">
+                                        {% for error in form.crop_name.errors %}
+                                            <small>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                {{ form.soil_type.label(class="form-label") }}
+                                {{ form.soil_type(class="form-control") }}
+                                {% if form.soil_type.errors %}
+                                    <div class="text-danger mt-1">
+                                        {% for error in form.soil_type.errors %}
+                                            <small>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                {{ form.farm_size_acres.label(class="form-label") }}
+                                {{ form.farm_size_acres(class="form-control", step="0.01") }}
+                                {% if form.farm_size_acres.errors %}
+                                    <div class="text-danger mt-1">
+                                        {% for error in form.farm_size_acres.errors %}
+                                            <small>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                {{ form.sowing_date.label(class="form-label") }}
+                                {{ form.sowing_date(class="form-control") }}
+                                {% if form.sowing_date.errors %}
+                                    <div class="text-danger mt-1">
+                                        {% for error in form.sowing_date.errors %}
+                                            <small>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                {{ form.location.label(class="form-label") }}
+                                {{ form.location(class="form-control") }}
+                                {% if form.location.errors %}
+                                    <div class="text-danger mt-1">
+                                        {% for error in form.location.errors %}
+                                            <small>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                {{ form.irrigation_type.label(class="form-label") }}
+                                {{ form.irrigation_type(class="form-control") }}
+                                {% if form.irrigation_type.errors %}
+                                    <div class="text-danger mt-1">
+                                        {% for error in form.irrigation_type.errors %}
+                                            <small>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            {{ form.farming_experience.label(class="form-label") }}
+                            {{ form.farming_experience(class="form-control") }}
+                            {% if form.farming_experience.errors %}
+                                <div class="text-danger mt-1">
+                                    {% for error in form.farming_experience.errors %}
+                                        <small>{{ error }}</small>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-save me-1"></i>Save Farm Profile
+                        </button>
+                        <a href="{{ url_for('chat.dashboard') }}" class="btn btn-secondary ms-2">
+                            <i class="fas fa-arrow-left me-1"></i>Back to Dashboard
+                        </a>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-list me-2"></i>Your Farm Profiles
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if profiles %}
+                        {% for profile in profiles %}
+                        <div class="card border-success mb-3">
+                            <div class="card-body">
+                                <h6 class="card-title text-success">{{ profile.crop_name }}</h6>
+                                <p class="card-text mb-1">
+                                    <strong>Soil:</strong> {{ profile.soil_type|title }}<br>
+                                    {% if profile.farm_size_acres %}
+                                    <strong>Size:</strong> {{ profile.farm_size_acres }} acres<br>
+                                    {% endif %}
+                                    {% if profile.location %}
+                                    <strong>Location:</strong> {{ profile.location }}<br>
+                                    {% endif %}
+                                    {% if profile.irrigation_type %}
+                                    <strong>Irrigation:</strong> {{ profile.irrigation_type|title }}<br>
+                                    {% endif %}
+                                </p>
+                                <small class="text-muted">
+                                    Created: {{ profile.created_at.strftime('%B %d, %Y') }}
+                                </small>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="text-center text-muted">
+                            <i class="fas fa-seedling fa-3x mb-3"></i>
+                            <p>No farm profiles yet. Add your first profile using the form.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

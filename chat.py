@@ -71,6 +71,10 @@ def send_message():
         # Analyze the query to extract farming context
         query_analysis = farming_assistant.analyze_farming_query(user_message)
         
+        # Parse farm size to numeric value
+        from utils import parse_farm_size
+        farm_size_numeric = parse_farm_size(query_analysis.get('farm_size'))
+        
         # Save user message
         user_msg = ChatMessage(
             session_id=session.id,
@@ -78,7 +82,7 @@ def send_message():
             content=user_message,
             crop_type=query_analysis.get('crop_type'),
             soil_type=query_analysis.get('soil_type'),
-            farm_size_acres=query_analysis.get('farm_size'),
+            farm_size_acres=farm_size_numeric,
             query_type=query_analysis.get('query_type', 'general')
         )
         db.session.add(user_msg)
@@ -99,7 +103,7 @@ def send_message():
             content=ai_response,
             crop_type=query_analysis.get('crop_type'),
             soil_type=query_analysis.get('soil_type'),
-            farm_size_acres=query_analysis.get('farm_size'),
+            farm_size_acres=farm_size_numeric,
             query_type=query_analysis.get('query_type', 'general')
         )
         db.session.add(ai_msg)
@@ -203,7 +207,7 @@ def farm_profile():
             flash('Error adding farm profile. Please try again.', 'danger')
     
     profiles = FarmProfile.query.filter_by(user_id=current_user.id, is_active=True).all()
-    return render_template('profile.html', form=form, profiles=profiles)
+    return render_template('farm_profile.html', form=form, profiles=profiles)
 
 @chat_bp.route('/delete-session/<int:session_id>', methods=['POST'])
 @login_required

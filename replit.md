@@ -117,6 +117,9 @@ Changelog:
 - July 05, 2025. Enhanced chat interface with category-based input system
 - July 05, 2025. Removed sidebar sessions, improved spacing and text visibility
 - July 05, 2025. Added structured input forms for fertilizer, watering, pest control, crop selection, and general categories
+- July 05, 2025. Fixed farm profile template error and database farm_size parsing issue
+- July 05, 2025. Optimized chat layout to 1/3 input (33vh) and 2/3 output (67vh) for better conversation visibility
+- July 05, 2025. Created local development setup with configuration files and deployment guide
 ```
 
 ## User Preferences
