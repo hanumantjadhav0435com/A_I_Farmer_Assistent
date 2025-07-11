@@ -4,27 +4,18 @@ import logging
 from google import genai
 from google.genai import types
 
-# Initialize Gemini client
-client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY"))
+# ✅ Directly use the API key here (for local testing only)
+client = genai.Client(api_key="AIzaSyAKiKWyZ7W7dR3sCYMAfQyOTICrvA4vGEg")
 
 class FarmingAssistant:
     def __init__(self):
-        self.model_name = "gemini-2.5-flash"
+        self.model_name = "gemini-1.5-flash"
         
     def get_farming_advice(self, user_query, crop_type=None, soil_type=None, farm_size=None, language='english'):
-        """
-        Get personalized farming advice from Gemini AI
-        """
         try:
-            # Create context-aware prompt
             system_prompt = self._create_system_prompt(language)
-            
-            # Format user query with context
-            formatted_query = self._format_user_query(
-                user_query, crop_type, soil_type, farm_size, language
-            )
-            
-            # Generate response
+            formatted_query = self._format_user_query(user_query, crop_type, soil_type, farm_size, language)
+
             response = client.models.generate_content(
                 model=self.model_name,
                 contents=[
@@ -47,7 +38,6 @@ class FarmingAssistant:
             return "I'm sorry, there was an error processing your request. Please try again later."
     
     def _create_system_prompt(self, language):
-        """Create system prompt based on language preference"""
         base_prompt = """You are an expert agricultural advisor and farming assistant. Your role is to provide accurate, practical, and actionable farming advice to farmers. 
 
 Key responsibilities:
@@ -75,9 +65,7 @@ Guidelines:
         return base_prompt
     
     def _format_user_query(self, query, crop_type, soil_type, farm_size, language):
-        """Format user query with additional context"""
         context_parts = []
-        
         if crop_type:
             context_parts.append(f"Crop: {crop_type}")
         if soil_type:
@@ -104,7 +92,6 @@ Make your response practical and actionable for the farmer.
         return formatted_query
     
     def analyze_farming_query(self, query):
-        """Analyze the query to extract farming-related information"""
         try:
             analysis_prompt = f"""
 Analyze this farming query and extract key information:
@@ -119,7 +106,6 @@ Please identify and return in JSON format:
 
 Return only valid JSON.
 """
-            
             response = client.models.generate_content(
                 model=self.model_name,
                 contents=analysis_prompt,
@@ -139,7 +125,6 @@ Return only valid JSON.
             return self._default_analysis()
     
     def _default_analysis(self):
-        """Return default analysis when parsing fails"""
         return {
             "crop_type": None,
             "soil_type": None,
@@ -149,7 +134,6 @@ Return only valid JSON.
         }
     
     def get_crop_suggestions(self, soil_type, location, language='english'):
-        """Get crop suggestions based on soil type and location"""
         try:
             prompt = f"""
 Based on the following information, suggest the best crops to grow:
@@ -164,7 +148,6 @@ Please provide:
 
 Language: {language}
 """
-            
             response = client.models.generate_content(
                 model=self.model_name,
                 contents=prompt,
@@ -180,5 +163,5 @@ Language: {language}
             logging.error(f"Error getting crop suggestions: {str(e)}")
             return "Sorry, I couldn't provide crop suggestions at this time."
 
-# Initialize the farming assistant
+# ✅ Initialize the assistant
 farming_assistant = FarmingAssistant()

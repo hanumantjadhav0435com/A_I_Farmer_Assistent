@@ -19,7 +19,10 @@ mail = Mail()
 
 # Create the app
 app = Flask(__name__)
-app.secret_key = os.environ.get("SESSION_SECRET")
+
+# ✅ Fixed: Added fallback secret key for CSRF protection
+app.secret_key = os.environ.get("SESSION_SECRET", "super-secret-key-12345")
+
 app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 
 # Configure the database
