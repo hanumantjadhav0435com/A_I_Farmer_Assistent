@@ -182,6 +182,7 @@
 
 # # Initialize the farming assistant
 # farming_assistant = FarmingAssistant()
+
 import os
 import json
 import logging
@@ -199,7 +200,7 @@ configure(api_key=API_KEY)
 
 class FarmingAssistant:
     def __init__(self):
-        self.model_name = "gemini-2.5-flash"
+        self.model_name = "models/gemini-1.5-flash"  # safer model name
         self.model = GenerativeModel(self.model_name)
 
     def get_farming_advice(self, user_query, crop_type=None, soil_type=None, farm_size=None, language='english'):
@@ -208,13 +209,14 @@ class FarmingAssistant:
             system_prompt = self._create_system_prompt(language)
             formatted_query = self._format_user_query(user_query, crop_type, soil_type, farm_size, language)
 
+            prompt = f"{system_prompt}\n\n{formatted_query}"
+
             response = self.model.generate_content(
-                contents=[{"role": "user", "parts": [formatted_query]}],
+                prompt,
                 generation_config={
                     "temperature": 0.7,
                     "max_output_tokens": 2000,
-                },
-                system_instruction=system_prompt
+                }
             )
 
             return response.text if hasattr(response, "text") else response.candidates[0].content.parts[0].text
@@ -294,7 +296,7 @@ Return only valid JSON.
 """
 
             response = self.model.generate_content(
-                contents=[{"role": "user", "parts": [analysis_prompt]}],
+                analysis_prompt,
                 generation_config={"temperature": 0.3},
             )
 
@@ -332,7 +334,7 @@ Language: {language}
 """
 
             response = self.model.generate_content(
-                contents=[{"role": "user", "parts": [prompt]}],
+                prompt,
                 generation_config={
                     "temperature": 0.7,
                     "max_output_tokens": 1500,
