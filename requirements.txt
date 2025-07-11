@@ -1,32 +1,13 @@
-# Flask and Core Extensions
 Flask==2.3.3
 Flask-WTF==1.1.1
 Flask-Login==0.6.3
 Flask-Mail==0.9.1
 Flask-SQLAlchemy==3.1.1
-
-# Google Gemini API (via Vertex AI or REST)
+SQLAlchemy==2.0.30
+psycopg2-binary==2.9.9
 google-generativeai==0.3.2
-
-# Security and Forms
-Werkzeug==2.3.7
+gunicorn==21.2.0
+python-dotenv==1.0.1
+requests==2.31.0
 email-validator==2.1.1
 WTForms==3.1.2
-
-# Database
-SQLAlchemy==2.0.30
-psycopg2-binary==2.9.9  # For PostgreSQL (production)
-
-
-# Deployment & Environment
-gunicorn==21.2.0  # For production WSGI server
-python-dotenv==1.0.1  # For loading .env files
-requests==2.31.0
-
-# Others
-itsdangerous==2.1.2  # Required for session/token management
-MarkupSafe==2.1.5
-Jinja2==3.1.4
-
-# Optional for logging/debugging
-loguru==0.7.2
